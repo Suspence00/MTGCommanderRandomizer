@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Random Magic the Gathering Color and Commanders</title>
+</head>
+<body>
+	<h1>Random Magic the Gathering Color and Commanders</h1>
+	<p>Color: <span id="color"></span></p>
+	<div id="commanders">
+	</div>
+  <script>
+	// Array of all Magic the Gathering colors
+	let colors = ['White', 'Blue', 'Black', 'Red', 'Green', 'White-Blue', 'White-Black', 'White-Red', 'White-Green', 'Blue-Black', 'Blue-Red', 'Blue-Green', 'Black-Red', 'Black-Green', 'Red-Green', 'White-Blue-Black', 'White-Blue-Red', 'White-Blue-Green', 'White-Black-Red', 'White-Black-Green', 'White-Red-Green', 'Blue-Black-Red', 'Blue-Black-Green', 'Blue-Red-Green', 'Black-Red-Green'];
+
+	// Function to choose a random color
+	function chooseColor() {
+		let randomIndex = Math.floor(Math.random() * colors.length);
+		return colors[randomIndex];
+	}
+
+	// Function to get 5 random commanders using Scryfall API
+	async function getCommanders(color) {
+		let commanders = [];
+		let baseURL = 'https://api.scryfall.com/cards/search?q=is%3Acommander+color%3A' + color;
+
+		// Get 5 random pages of commanders
+		for (let i = 0; i < 5; i++) {
+			let randomPage = Math.floor(Math.random() * 50);
+			let url = baseURL + '+page%3A' + randomPage;
+
+			// Get the data from the API
+			let response = await fetch(url);
+			let data = await response.json();
+
+			// Choose a random commander from the page
+			let randomIndex = Math.floor(Math.random() * data.data.length);
+			let commander = data.data[randomIndex];
+			commanders.push(commander);
+		}
+
+		return commanders;
+	}
+
+	// Choose a random color and get the commanders
+	let color = chooseColor();
+	let commanders = getCommanders(color);
+
+	// Display the color and commanders
+	document.getElementById('color').innerHTML = color;
+	commanders.then(function(commanders) {
+		let html = '';
+		commanders.forEach(function(commander) {
+			html += '<img src="' + commander.image_uris.normal + '" alt="' + commander.name + '">';
+		});
+		document.getElementById('commanders').innerHTML = html;
+	});
+</script>
+</body>
+</html>
