@@ -29,7 +29,7 @@ Copy code
 	// Function to get 5 random commanders using Scryfall API
 	async function getCommanders(color) {
 		let commanders = [];
-		let baseURL = 'https://api.scryfall.com/cards/search?q=is%3Acommander+color%3A' + color;
+		let baseURL = 'https://api.scryfall.com/cards/search?q=is%3Acommander+color%3' + color;
 
 		// Get 5 random pages of commanders
 		for (let i = 0; i < 5; i++) {
