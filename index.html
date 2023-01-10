@@ -15,10 +15,11 @@
       gap: 20px;
       flex-wrap: wrap;
     }
-
     .card {
       flex: 1;
-      width: 15%;
+    }
+    .card img {
+      width: 100%;
     }
   </style>
 </head>
@@ -36,7 +37,10 @@
     }
     const cards = [];
 
-    while (cards.length < 5) {
+    let count = 0;
+
+    while (cards.length < 5 && count < 20) {
+      count++;
       const currentCard = await getRandomCard();
       console.log(currentCard)
       if (!cards.some(({id}) => id === currentCard.id)) {
@@ -48,10 +52,13 @@
     const content = document.getElementById("content");
 
     for (const card of cards) {
+      const a = document.createElement("a");
+      a.href = card.scryfall_uri
       const img = document.createElement("img");
-      img.className = "card"
+      a.className = "card"
       img.src = card.image_uris.png;
-      content.append(img);
+      a.append(img);
+      content.append(a);
     }
   }
   main();
