@@ -10,10 +10,19 @@
       color: #bbb;
       font-family: 'Roboto', sans-serif;
     }
+    h1 {
+      display: flex;
+      gap: .4em;
+      align-items: center;
+    }
+
     #content {
       display: flex;
-      gap: 20px;
+      gap: 1em;
       flex-wrap: wrap;
+    }
+    .mana {
+      height: 1em;
     }
     .card {
       flex: 1;
@@ -27,8 +36,17 @@
 <h1>Color: <span id="color"></span></h1>
 <div id="content"></div>
 <script>
+
+  const buildManaSymbol = (color) =>
+     color.split("").map(url => {
+      const img = document.createElement("img");
+      img.className = "mana";
+      img.src = `svg/mana${url}.png`;
+      return img;
+    })
+
   const main = async () => {
-    const colors = ["colorless", "W", "U", "B", "R", "G", "WU", "WB", "WR", "WG", "UB", "UR", "UG", "BR", "BG", "RG", "WUB", "WUR", "WUG", "WBR", "WBG", "WRG", "UBR", "UBG", "URG", "BRG", "WUBR", "WUBG", "WURG", "WBRG", "UBRG", "WUBRG"];
+    const colors = ["c", "w", "u", "b", "r", "g", "wu", "wb", "wr", "wg", "ub", "ur", "ug", "br", "bg", "rg", "wub", "wur", "wug", "wbr", "wbg", "wrg", "ubr", "ubg", "urg", "brg", "wubr", "wubg", "wurg", "wbrg", "ubrg", "wubrg"];
     const color = colors[Math.floor(Math.random() * 32)];
 
     const getRandomCard = async () => {
@@ -42,13 +60,12 @@
     while (cards.length < 5 && count < 20) {
       count++;
       const currentCard = await getRandomCard();
-      console.log(currentCard)
       if (!cards.some(({id}) => id === currentCard.id)) {
         cards.push(currentCard)
       }
     }
 
-    document.getElementById("color").textContent = color;
+    document.getElementById("color").append(...buildManaSymbol(color));
     const content = document.getElementById("content");
 
     for (const card of cards) {
