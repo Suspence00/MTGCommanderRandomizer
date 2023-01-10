@@ -29,10 +29,13 @@
                 seenCards.add(card.id);
                 // Display the commander name
                 $("#commander" + commander + "_name").text(card.name);
-                // Display the commander image
-                $("#commander" + commander).attr("src", card.image_uris.normal);
-                // Display the commander link
-                $("#commander" + commander).parent().attr("href", card.scryfall_uri);
+                if(card.image_uris && card.image_uris.normal){
+                    $("#commander" + commander).attr("src", card.image_uris.normal);
+                    $("#commander" + commander).parent().attr("href", card.scryfall_uri);
+                }else{
+                    //handle case where no image uri is returned
+                    console.log('no image for this card')
+                }
               }else{
                 //if card already seen, redo the loop
                 i--;
