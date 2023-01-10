@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <style>
     body {
       background-color: #222;
@@ -31,18 +28,10 @@
       height: 1em;
     }
 
-    .card {
-      flex: 1;
-    }
-
-    .card img {
-      width: 100%;
-    }
-
     .flip-card {
       background-color: transparent;
-      width: 300px;
-      height: 300px;
+      width: 336px;
+      height: 468px;
       perspective: 1000px;
     }
 
@@ -69,6 +58,7 @@
     }
     .flip-card-front img, .flip-card-back img {
       width: 100%;
+      max-height: 100vh;
     }
 
     .flip-card-front {
@@ -88,6 +78,7 @@
 <script>
 
   const buildCard = (card) => {
+    console.log(card)
     const flipCard = document.createElement("a");
     flipCard.className = "flip-card";
     flipCard.href = card.scryfall_uri;
@@ -102,7 +93,7 @@
     flipCardBack.className = "flip-card-back";
 
     const backImg = document.createElement("img");
-    backImg.src = card.image_uris.png;
+    backImg.src = card?.image_uris?.png || card?.card_faces?.[0]?.image_uris?.png;
 
     const frontImg = document.createElement("img");
     frontImg.src = "img/card-back.png"
