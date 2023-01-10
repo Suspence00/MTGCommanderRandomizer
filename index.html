@@ -19,7 +19,10 @@
     .card {
       flex: 1;
       width: 15%;
+<<<<<<< HEAD
 	  cursor: pointer;
+=======
+>>>>>>> parent of e2b73db (Fix bugs)
     }
   </style>
 </head>
@@ -49,11 +52,16 @@
 
     for (const card of cards) {
       const img = document.createElement("img");
+<<<<<<< HEAD
       img.className = "card";
       img.src = card.image_uris.png;
       img.addEventListener("click", function() {
         window.location.href = card.scryfall_uri;
       });
+=======
+      img.className = "card"
+      img.src = card.image_uris.png;
+>>>>>>> parent of e2b73db (Fix bugs)
       content.append(img);
     }
   }
