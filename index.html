@@ -1,59 +1,45 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Magic the Gathering Color Picker</title>
-  <style>
-    .color {
-      font-size: 24px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .commander {
-      display: inline-block;
-      margin: 10px;
-    }
-    img {
-      width: 100px;
-      height: 100px;
-    }
-  </style>
-</head>
-<body>
-  <div id="color">
-    <p class="color"></p>
-  </div>
-  <div id="commanders">
-  </div>
-  <script>
-    // 1. Picks a random Magic the Gathering color
-    // including all two-color and three-color combinations such as wb
-    const colors = ['W', 'U', 'B', 'R', 'G', 'WU', 'UB', 'BR', 'RG', 'GW', 'WB', 'UR', 'BG', 'RW', 'GU', 'WR', 'UG', 'BW', 'RU', 'GB'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
+  <head>
+    <title>Magic the Gathering Commander</title>
+    <script>
+      const colorAbbreviations = [
+        "W", "U", "B", "R", "G", "WU", "WB", "WR", "WG", "UB", "UR", "UG", "BR", "BG", "RG"
+      ];
+      const colorText = document.getElementById("color-text");
+      const commanderContainer = document.getElementById("commanders");
+      
+      function getRandomColor() {
+        const randomIndex = Math.floor(Math.random() * colorAbbreviations.length);
+        return colorAbbreviations[randomIndex];
+      }
 
-    // Display the randomly chosen color
-    document.querySelector('.color').textContent = color;
-
-    // 2. Pick 5 random commanders via Scryfall API that use the randomly generated color
-    const commandersUrl = `https://api.scryfall.com/cards/search?q=color:${color}&unique=cards&format=image`;
-    fetch(commandersUrl)
-      .then(response => response.json())
-      .then(data => {
-        // Get the array of cards from the response
-        const cards = data.data;
-
-        // Shuffle the array of cards
-        for (let i = cards.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [cards[i], cards[j]] = [cards[j], cards[i]];
-        }
-
-        // Display the images of the first 5 commanders in the shuffled array
-        for (let i = 0; i < 5; i++) {
-          const imgElement = document.createElement('img');
-          imgElement.src = cards[i].image_uris.small;
-          document.querySelector('#commanders').appendChild(imgElement);
-        }
-      });
-  </script>
-</body>
+      function getCommanderData(color) {
+        // Use the Scryfall API to search for commanders with the specified color
+        const apiUrl = `https://api.scryfall.com/cards/search?q=is:commander+color:${color}`;
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            const commanders = data.data;
+            colorText.textContent = `Color: ${color}`;
+            // display the first 5 commanders returned
+            for (let i = 0; i < 5; i++) {
+              const commander = commanders[i];
+              const img = document.createElement("img");
+              img.src = commander.image_uris.small;
+              commanderContainer.appendChild(img);
+            }
+          });
+      }
+      
+      function init() {
+        const color = getRandomColor();
+        getCommanderData(color);
+      }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="color-text"></h1>
+    <div id="commanders"></div>
+  </body>
 </html>
