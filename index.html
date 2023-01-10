@@ -12,22 +12,34 @@
 
       // Display the chosen color
       $("#color").text(color);
+      
+      //Keep track of seen cards
+      var seenCards = new Set();
 
       // API call to Scryfall to get five random commanders of the chosen color
-      for (let i = 1; i <= 5; i++) {
-        $.ajax({
-          url: "https://api.scryfall.com/cards/random",
-          data: {
-            q: "is:commander c=" + color,
-          },
-          success: function(card) {
-            // Display the commander name
-            $("#commander" + i + "_name").text(card.name);
-            // Display the commander image
-            $("#commander" + i).attr("src", card.image_uris.normal);
-          }
-        });
-      }
+      var commanders = [1, 2, 3, 4, 5];
+      $.each(commanders, function(i, commander) {
+          $.ajax({
+            url: "https://api.scryfall.com/cards/random",
+            data: {
+              q: "is:commander c=" + color,
+            },
+            success: function(card) {
+              if(!seenCards.has(card.id)){
+                seenCards.add(card.id);
+                // Display the commander name
+                $("#commander" + commander + "_name").text(card.name);
+                // Display the commander image
+                $("#commander" + commander).attr("src", card.image_uris.normal);
+                // Display the commander link
+                $("#commander" + commander).parent().attr("href", card.scryfall_uri);
+              }else{
+                //if card already seen, redo the loop
+                i--;
+              }
+            }
+          });
+      });
     });
   </script>
 </head>
@@ -37,23 +49,13 @@
   </div>
   <table>
     <tr>
-      <td><img id="commander1" src="" width="200" height="278"></td>
-      <td><img id="commander2" src="" width="200" height="278"></td>
-      <td><img id="commander3" src="" width="200" height="278"></td>
+      <td><a href="" target="_blank"><img id="commander1" src="" width="200" height="278"></a></td>
+      <td><a href="" target="_blank"><img id="commander2" src="" width="200" height="278"></a></td>
+      <td><a href="" target="_blank"><img id="commander3" src="" width="200" height="278"></a></td>
     </tr>
     <tr>
-      <td><img id="commander4" src="" width="200" height="278"></td>
-      <td><img id="commander5" src="" width="200" height="278"></td>
-    </tr>
-    <tr>
-      <td><span id="commander1_name"></span></td>
-      <td><span id="commander2_name"></span></td>
-      <td><span id="commander3_name"></span></td>
-    </tr>
-    <tr>
-      <td><span id="commander4_name"></span></td>
-      <td><span id="commander5_name"></span></td>
-    </tr>
+      <td><a href="" target="_blank"><img id="commander4" src="" width="200" height="278"></a></td>
+      <td><a href="" target="_blank"><img id="commander5" src="" width="200" height="278"></a></td>
+    </tr
   </table>
 </body>
-</html>
