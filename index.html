@@ -1,45 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Magic the Gathering Commander</title>
-    <script>
-      const colorAbbreviations = [
-        "W", "U", "B", "R", "G", "WU", "WB", "WR", "WG", "UB", "UR", "UG", "BR", "BG", "RG"
-      ];
-      const colorText = document.getElementById("color-text");
-      const commanderContainer = document.getElementById("commanders");
-      
-      function getRandomColor() {
-        const randomIndex = Math.floor(Math.random() * colorAbbreviations.length);
-        return colorAbbreviations[randomIndex];
-      }
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Array of all possible color combinations
+      var colors = ["W", "U", "B", "R", "G", "WU", "WB", "WR", "WG", "UB", "UR", "UG", "BR", "BG", "RG", "WUB", "WUR", "WUG", "WBR", "WBG", "WRG", "UBR", "UBG", "URG", "BRG", "WUBR", "WUBG", "WURG", "WBRG", "UBRG", "WUBRG"];
 
-      function getCommanderData(color) {
-        // Use the Scryfall API to search for commanders with the specified color
-        const apiUrl = `https://api.scryfall.com/cards/search?q=is:commander+color:${color}`;
-        fetch(apiUrl)
-          .then(response => response.json())
-          .then(data => {
-            const commanders = data.data;
-            colorText.textContent = `Color: ${color}`;
-            // display the first 5 commanders returned
-            for (let i = 0; i < 5; i++) {
-              const commander = commanders[i];
-              const img = document.createElement("img");
-              img.src = commander.image_uris.small;
-              commanderContainer.appendChild(img);
-            }
-          });
-      }
-      
-      function init() {
-        const color = getRandomColor();
-        getCommanderData(color);
-      }
-    </script>
-  </head>
-  <body onload="init()">
-    <h1 id="color-text"></h1>
-    <div id="commanders"></div>
-  </body>
-</html>
+      // Generate a random color
+      var color = colors[Math.floor(Math.random() * colors.length)];
+
+      // Display the chosen color
+      $("#color").text(color);
+
+      // API call to Scryfall to get five random commanders of the chosen color
+      $.ajax({
+        url: "https://api.scryfall.com/cards/random",
+        data: {
+          q: "e:commander t:" + color,
+          format: "image"
+        },
+        success: function(card) {
+          // Display the first commander
+          $("#commander1").attr("src", card.image_uris.normal);
+
+          // Make four more API calls to get the remaining commanders
+          for (var i = 2; i <= 5; i++) {
+            $.ajax({
+              url: "https://api.scryfall.com/cards/random",
+              data: {
+                q: "e:commander t:" + color,
+                format: "image"
+              },
+              success: function(card) {
+                // Display the commander
+                $("#commander" + i).attr("src", card.image_uris.normal);
+              }
+            });
+          }
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div>
+    <h1>Color: <span id="color"></span></h1>
+  </div>
+  <table>
+    <tr>
+      <td><img id="commander1" src="" width="200" height="278"></td>
+      <td><img id="commander2" src="" width="200" height="278"></td>
+      <td><img id="commander3" src="" width="200" height="278"></td>
+    </tr>
+    <tr>
+      <td><img id="commander4" src="" width="200" height="278"></td>
+      <td><img id="commander5" src="" width="200" height="278"></td>
+    </tr>
+  </table>
+</body>
