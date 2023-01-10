@@ -15,11 +15,11 @@
       gap: 20px;
       flex-wrap: wrap;
     }
+
     .card {
       flex: 1;
-    }
-    .card img {
-      width: 100%;
+      width: 15%;
+	  cursor: pointer;
     }
   </style>
 </head>
@@ -37,14 +37,10 @@
     }
     const cards = [];
 
-    let count = 0;
-
-    while (cards.length < 5 && count < 20) {
-      count++;
+    while (cards.length < 5) {
       const currentCard = await getRandomCard();
-      console.log(currentCard)
       if (!cards.some(({id}) => id === currentCard.id)) {
-        cards.push(currentCard)
+        cards.push(currentCard);
       }
     }
 
@@ -52,17 +48,16 @@
     const content = document.getElementById("content");
 
     for (const card of cards) {
-      const a = document.createElement("a");
-      a.href = card.scryfall_uri
       const img = document.createElement("img");
-      a.className = "card"
+      img.className = "card";
       img.src = card.image_uris.png;
-      a.append(img);
-      content.append(a);
+      img.addEventListener("click", function() {
+        window.location.href = card.scryfall_uri;
+      });
+      content.append(img);
     }
   }
   main();
-
 </script>
 </body>
 
