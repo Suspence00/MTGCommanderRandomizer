@@ -30,9 +30,24 @@
     }
     .card {
       flex: 1;
+      position: relative;
     }
     .card img {
       width: 100%;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: black;
+      opacity: 1;
+    }
+    .card:hover::before {
+      opacity: 0;
+    }
+    .card.revealed::before {
+      display: none;
     }
   </style>
 </head>
@@ -40,7 +55,6 @@
 <h1>Color: <span id="color"></span></h1>
 <div id="content"></div>
 <script>
-
   const buildManaSymbol = (color) =>
      color.split("").map(url => {
       const img = document.createElement("img");
@@ -56,35 +70,33 @@
     const getRandomCard = async () => {
       const response = await fetch(`https://api.scryfall.com/cards/random?q=is:commander%20id=${color}%20f:commander`);
       return await response.json();
-    }
-    const cards = [];
+}
+const cards = [];
+let count = 0;
 
-    let count = 0;
-
-    while (cards.length < 5 && count < 20) {
-      count++;
-      const currentCard = await getRandomCard();
-      if (!cards.some(({id}) => id === currentCard.id)) {
-        cards.push(currentCard)
-      }
-    }
-
-    document.getElementById("color").append(...buildManaSymbol(color));
-    const content = document.getElementById("content");
-
-    for (const card of cards) {
-      const a = document.createElement("a");
-      a.href = card.scryfall_uri
-      const img = document.createElement("img");
-      a.className = "card"
-      img.src = card.image_uris.png;
-      a.append(img);
-      content.append(a);
-    }
+while (cards.length < 5 && count < 20) {
+  count++;
+  const currentCard = await getRandomCard();
+  if (!cards.some(({id}) => id === currentCard.id)) {
+    cards.push(currentCard)
   }
-  main();
+}
+
+document.getElementById("color").append(...buildManaSymbol(color));
+const content = document.getElementById("content");
+
+for (const card of cards) {
+  const a = document.createElement("a");
+  a.href = card.scryfall_uri
+  const img = document.createElement("img");
+  a.className = "card"
+  img.src = card.image_uris.png;
+  a.append(img);
+  a.addEventListener("mouseover", () => a.classList.add("revealed"));
+  content.append(a);
+}
+}
+main();
 
 </script>
 </body>
-
-</html>
