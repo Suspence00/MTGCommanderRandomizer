@@ -1,71 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    // Array of all possible color combinations
-    var colors = ["colorless","W", "U", "B", "R", "G", "WU", "WB", "WR", "WG", "UB", "UR", "UG", "BR", "BG", "RG", "WUB", "WUR", "WUG", "WBR", "WBG", "WRG", "UBR", "UBG", "URG", "BRG", "WUBR", "WUBG", "WURG", "WBRG", "UBRG", "WUBRG"];
-
-    // Generate a random color
-    var color = colors[Math.floor(Math.random() * colors.length)];
-
-    // Display the chosen color
-    $("#color").text(color);
-    
-    //Keep track of seen cards
-    var seenCards = new Set();
-
-    // API call to Scryfall to get five random commanders of the chosen color
-    var commanders = [1, 2, 3, 4, 5];
-    var i = 0;
-    function callApi() {
-      $.ajax({
-        url: "https://api.scryfall.com/cards/random",
-        data: {
-          q: "is:commander c=" + color,
-        },
-        success: function(card) {
-          if(!seenCards.has(card.id)){
-            seenCards.add(card.id);
-            // Display the commander name
-            $("#commander" + (i+1) + "_name").text(card.name);
-            if(card.image_uris && card.image_uris.normal){
-                $("#commander" + (i+1)).attr("src", card.image_uris.normal);
-                $("#commander" + (i+1)).parent().attr("href", card.scryfall_uri);
-            }else{
-                //handle case where no image uri is returned
-                console.log('no image for this card')
-            }
-          }else{
-            //if card already seen, redo the loop
-            i--;
-          }
-          i++;
-          if (i < commanders.length) {
-            setTimeout(callApi, 100);
-          }
-        }
-      });
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #222;
+      color: #bbb;
+      font-family: 'Roboto', sans-serif;
     }
-    callApi();
-  });
-</script>
+    #content {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
 
+    .card {
+      flex: 1;
+      width: 15%;
+    }
+  </style>
 </head>
 <body>
-  <div>
-    <h1>Color: <span id="color"></span></h1>
-  </div>
-  <table>
-    <tr>
-      <td><a href="" target="_blank"><img id="commander1" src="" width="200" height="278"></a></td>
-      <td><a href="" target="_blank"><img id="commander2" src="" width="200" height="278"></a></td>
-      <td><a href="" target="_blank"><img id="commander3" src="" width="200" height="278"></a></td>
-    </tr>
-    <tr>
-      <td><a href="" target="_blank"><img id="commander4" src="" width="200" height="278"></a></td>
-      <td><a href="" target="_blank"><img id="commander5" src="" width="200" height="278"></a></td>
-    </tr
-  </table>
+<h1>Color: <span id="color"></span></h1>
+<div id="content"></div>
+<script>
+  const main = async () => {
+    const colors = ["colorless", "W", "U", "B", "R", "G", "WU", "WB", "WR", "WG", "UB", "UR", "UG", "BR", "BG", "RG", "WUB", "WUR", "WUG", "WBR", "WBG", "WRG", "UBR", "UBG", "URG", "BRG", "WUBR", "WUBG", "WURG", "WBRG", "UBRG", "WUBRG"];
+    const color = colors[Math.floor(Math.random() * 32)];
+
+    const getRandomCard = async () => {
+      const response = await fetch(`https://api.scryfall.com/cards/random?q=is:commander%20id=${color}%20f:commander`);
+      return await response.json();
+    }
+    const cards = [];
+
+    while (cards.length < 5) {
+      const currentCard = await getRandomCard();
+      console.log(currentCard)
+      if (!cards.some(({id}) => id === currentCard.id)) {
+        cards.push(currentCard)
+      }
+    }
+
+    document.getElementById("color").textContent = color;
+    const content = document.getElementById("content");
+
+    for (const card of cards) {
+      const img = document.createElement("img");
+      img.className = "card"
+      img.src = card.image_uris.png;
+      content.append(img);
+    }
+  }
+  main();
+
+</script>
 </body>
+
+</html>
