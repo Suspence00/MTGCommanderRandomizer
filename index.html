@@ -18,7 +18,7 @@
         $.ajax({
           url: "https://api.scryfall.com/cards/random",
           data: {
-            q: "e:commander t:" + color,
+            q: "is:commander c=" + color,
           },
           success: function(card) {
             // Display the commander name
