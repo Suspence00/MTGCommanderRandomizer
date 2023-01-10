@@ -14,32 +14,20 @@
       $("#color").text(color);
 
       // API call to Scryfall to get five random commanders of the chosen color
-      $.ajax({
-        url: "https://api.scryfall.com/cards/random",
-        data: {
-          q: "e:commander c=" + color,
-          format: "image"
-        },
-        success: function(card) {
-          // Display the first commander
-          $("#commander1").attr("src", card.image_uris.normal);
-
-          // Make four more API calls to get the remaining commanders
-          for (var i = 2; i <= 5; i++) {
-            $.ajax({
-              url: "https://api.scryfall.com/cards/random",
-              data: {
-                q: "e:commander c=" + color,
-                format: "image"
-              },
-              success: function(card) {
-                // Display the commander
-                $("#commander" + i).attr("src", card.image_uris.normal);
-              }
-            });
+      for (var i = 1; i <= 5; i++) {
+        $.ajax({
+          url: "https://api.scryfall.com/cards/random",
+          data: {
+            q: "e:commander t:" + color,
+          },
+          success: function(card) {
+            // Display the commander name
+            $("#commander" + i + "_name").text(card.name);
+            // Display the commander image
+            $("#commander" + i).attr("src", card.image_uris.normal);
           }
-        }
-      });
+        });
+      }
     });
   </script>
 </head>
@@ -57,5 +45,15 @@
       <td><img id="commander4" src="" width="200" height="278"></td>
       <td><img id="commander5" src="" width="200" height="278"></td>
     </tr>
+    <tr>
+      <td><span id="commander1_name"></span></td>
+      <td><span id="commander2_name"></span></td>
+      <td><span id="commander3_name"></span></td>
+    </tr>
+    <tr>
+      <td><span id="commander4_name"></span></td>
+      <td><span id="commander5_name"></span></td>
+    </tr>
   </table>
 </body>
+</html>
