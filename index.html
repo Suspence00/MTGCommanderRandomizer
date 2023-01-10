@@ -17,7 +17,7 @@
       $.ajax({
         url: "https://api.scryfall.com/cards/random",
         data: {
-          q: "e:commander t:" + color,
+          q: "e:commander c=" + color,
           format: "image"
         },
         success: function(card) {
@@ -29,7 +29,7 @@
             $.ajax({
               url: "https://api.scryfall.com/cards/random",
               data: {
-                q: "e:commander t:" + color,
+                q: "e:commander c=" + color,
                 format: "image"
               },
               success: function(card) {
