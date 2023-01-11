@@ -3,4 +3,4 @@ Picks a random color/color-combination and then generates 5 random commanders vi
 
 Code is fancy now thanks to @Krieger351
 
-## View here: https://suspence00.github.io/MTGCommanderRandomizer/
+## <a href="https://suspence00.github.io/MTGCommanderRandomizer/">View Here</a>
